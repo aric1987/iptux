@@ -1095,16 +1095,16 @@ void DialogPeer::ShowInfoEnclosure(DialogPeer *dlgpr)
             progress = 0;
             snprintf(progresstip, MAX_BUFLEN,_("Receiving Progress."));
         } else {
-            if(dlgpr->rcvdsize == 0)
-                 snprintf(progresstip, MAX_BUFLEN,_("%s to Receive."),
-                          numeric_to_size(dlgpr->torcvsize));
-            else {
+            if(dlgpr->rcvdsize == 0) {
+				progress = 0;
+                snprintf(progresstip, MAX_BUFLEN,_("%s to Receive."), numeric_to_size(dlgpr->torcvsize));
+			} else {
                 progress = percent(dlgpr->rcvdsize,dlgpr->torcvsize)/100;
                 snprintf(progresstip, MAX_BUFLEN, _("%s Of %s Received."),
                          numeric_to_size(dlgpr->rcvdsize),numeric_to_size(dlgpr->torcvsize));
             }
         }
-        if(progress == 1.0){
+        if(progress >= 1.0){
                 g_source_remove(dlgpr->timerrcv);
                 snprintf(progresstip, MAX_BUFLEN,_("Mission Completed!"));
         }
@@ -1168,10 +1168,11 @@ bool DialogPeer::UpdataEnclosureRcvUI(DialogPeer *dlgpr)
         progress = 0;
         snprintf(progresstip, MAX_BUFLEN,_("Receiving Progress."));
     } else {
-        if(dlgpr->rcvdsize == 0)
-             snprintf(progresstip, MAX_BUFLEN,_("%s to Receive."),
+        if(dlgpr->rcvdsize == 0) {
+			progress = 0;
+			snprintf(progresstip, MAX_BUFLEN,_("%s to Receive."),
                       numeric_to_size(dlgpr->torcvsize));
-        else {
+        } else {
             progress = percent(dlgpr->rcvdsize,dlgpr->torcvsize)/100;
             snprintf(progresstip, MAX_BUFLEN, _("%s Of %s Received."),
                      numeric_to_size(dlgpr->rcvdsize),numeric_to_size(dlgpr->torcvsize));
@@ -1181,8 +1182,8 @@ bool DialogPeer::UpdataEnclosureRcvUI(DialogPeer *dlgpr)
                                           "file-receive-progress-bar-widget"));
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(pbar),progress);
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar),progresstip);
-    if((progress == 1) || (progress == 0)){
-        if(progress == 1) {
+    if((progress >= 1.0) || (progress <= 0)){
+        if(progress >= 1.0) {
             g_source_remove(dlgpr->timerrcv);
             dlgpr->ShowInfoEnclosure(dlgpr);
         }

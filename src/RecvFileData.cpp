@@ -203,7 +203,7 @@ void RecvFileData::RecvDirFiles()
         uint32_t headsize, fileattr;
         int sock, fd;
         ssize_t size;
-        size_t len;
+        int64_t len;
         bool result;
         struct utimbuf timebuf;
 
